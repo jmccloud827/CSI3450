@@ -27,6 +27,7 @@ private static int       curRegionNum = 0;  // Used for get First/Next
 * Returns the Rigion Name for a given region number
 */
 public static String getRegionName(int regionNum) {
+    curRegionNum = 0;
     getFirstRegionName();
     // Check for out of range regions
     if ((regionNum < 0) || (regionNum > regionNames.size())) {
