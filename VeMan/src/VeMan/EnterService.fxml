@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VeMan.EnterServiceController">
+   <children>
+      <Label layoutX="280.0" layoutY="44.0" prefHeight="30.0" prefWidth="315.0" text="VeMan - Service Record Entry">
+         <font>
+            <Font name="System Bold Italic" size="20.0" />
+         </font>
+      </Label>
+      <TableView fx:id="vehicleTableView" layoutX="27.0" layoutY="284.0" prefHeight="266.0" prefWidth="474.0">
+         <columns>
+            <TableColumn fx:id="idCol" prefWidth="28.0" style="-fx-alignment: CENTER;" text="Id" />
+            <TableColumn fx:id="regionCol" prefWidth="70.0" style="-fx-alignment: CENTER;" text="Region" />
+            <TableColumn fx:id="yearCol" prefWidth="38.0" text="Year" />
+            <TableColumn fx:id="makeCol" prefWidth="67.0" style="-fx-alignment: CENTER;" text="Make" />
+            <TableColumn fx:id="VINCol" prefWidth="114.0" style="-fx-alignment: CENTER_RIGHT;" text="VIN" />
+            <TableColumn fx:id="curMilesCol" prefWidth="58.0" style="-fx-alignment: CENTER_RIGHT;" text="Cur Miles" />
+            <TableColumn fx:id="modelCol" prefWidth="90.0" style="-fx-alignment: CENTER;" text="Model" />
+         </columns>
+      </TableView>
+      <Button layoutX="727.0" layoutY="166.0" mnemonicParsing="false" onAction="#addServiceButtonPressed" text="Click to AddService Record" />
+      <ChoiceBox fx:id="regionChoiceBox" layoutX="535.0" layoutY="417.0" prefHeight="25.0" prefWidth="121.0" />
+      <Label alignment="CENTER" layoutX="542.0" layoutY="382.0" prefHeight="19.0" prefWidth="159.0" text="Filter Vehicles by Region" textAlignment="RIGHT">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <HBox layoutY="1.0" minHeight="-Infinity" prefHeight="27.0" prefWidth="914.0">
+         <children>
+            <MenuBar maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="929.0">
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem fx:id="menuLogout" mnemonicParsing="false" onAction="#menuLogoutClicked" text="Logout" />
+                        <MenuItem fx:id="menuFileCloseClick" mnemonicParsing="false" onAction="#menuCloseClicked" text="Close" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="User">
+                     <items>
+                        <MenuItem fx:id="menuUserMaint" mnemonicParsing="false" onAction="#menuUserClicked" text="User Maintenance" />
+                     </items>
+                  </Menu>
+                  <Menu fx:id="menuVehicleClick" mnemonicParsing="false" text="Vehicle">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuVehicleInvClicked" text="Vehicle Information" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuLeaseExpirationClicked" text="Lease Expiration" />
+                     </items>
+                  </Menu>
+                  <Menu fx:id="menuEnterServiceClicked" mnemonicParsing="false" text="Service">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuEnterServiceClicked" text="Enter Service" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuServiceHistoryClicked" text="Serivce History" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem fx:id="menuHelpAboutClick" mnemonicParsing="false" onAction="#menuAboutClicked" text="About" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+         </children>
+      </HBox>
+      <Button fx:id="regionFilterButton" layoutX="664.0" layoutY="417.0" mnemonicParsing="false" onAction="#regionServiceButtonPressed" prefHeight="25.0" prefWidth="48.0" text="Filter">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <AnchorPane layoutX="27.0" layoutY="122.0" prefHeight="88.0" prefWidth="700.0">
+         <children>
+            <DatePicker fx:id="serviceDatePicker" layoutX="9.0" layoutY="47.0" prefHeight="25.0" prefWidth="90.0" />
+            <TextField fx:id="mileageTextField" layoutX="114.0" layoutY="47.0" prefHeight="25.0" prefWidth="67.0" promptText="Mileage" />
+            <TextField fx:id="descriptionTextField" layoutX="211.0" layoutY="47.0" prefHeight="25.0" prefWidth="353.0" promptText="Description" />
+            <TextField fx:id="costTextField" layoutX="591.0" layoutY="47.0" prefHeight="25.0" prefWidth="75.0" promptText="Cost" />
+            <Label alignment="CENTER" layoutX="9.0" layoutY="14.0" prefHeight="19.0" prefWidth="90.0" text="Date of Service" textAlignment="RIGHT">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="114.0" layoutY="11.0" prefHeight="25.0" prefWidth="67.0" text="Mileage">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="605.0" layoutY="14.0" prefHeight="19.0" prefWidth="48.0" text="Cost" textAlignment="RIGHT">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="298.0" layoutY="14.0" prefHeight="19.0" prefWidth="121.0" text="Service Description">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <Label alignment="CENTER" layoutX="123.0" layoutY="253.0" prefHeight="19.0" prefWidth="264.0" text="Select Vehicle for Service record to be added" textAlignment="RIGHT" />
+   </children>
+</AnchorPane>

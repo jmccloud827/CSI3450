@@ -115,7 +115,6 @@ public class Vehicle {
 
             
             // Send statement to mySQl to execute.
-            System.out.println("Calling executeUpdate");
             numRowsUpdated = ps.executeUpdate();
             System.out.println("executeUpdate complete. Result: " + numRowsUpdated);
        
@@ -156,7 +155,6 @@ public class Vehicle {
             ps.setInt(1, this.id);
             
             // Send statement to mySQl to execute.
-            System.out.println("Calling executeUpdate");
             numRowsUpdated = ps.executeUpdate();
             System.out.println("executeUpdate complete. Result: " + numRowsUpdated);
        
@@ -207,8 +205,38 @@ public class Vehicle {
         return 0;
    }
 
+   
+   /****************************************
+    *   getFirstVehicleInRegion()
+    * 
+    * Reads the first Vehicle from the database for a Region.
+    * It loads vehicles for all regions if the region id is 0.
+    ****************************************/
+    int getFirstVehicleInRegion(int regionId) {
+        System.out.println("In Vehicle.getFirstVehicleInRegion.");
+        Connection dbConn = DBase.connectToDB();
+        
+        // If  region ID  is zero then select all the vehicles
+        if (regionId == 0) 
+                return getFirstVehicle();
+        
+        try {
+            // Build Java SQL query statement 
+            String sql = "SELECT * FROM VEHICLE where REGION_ID=?"; 
+            PreparedStatement ps = dbConn.prepareStatement(sql);
+            ps.setInt(1, regionId);
+        
+            // Send statement to mySQl to execute.
+            sqlResult = ps.executeQuery();
+            System.out.println("executeQuery complete." + sqlResult);
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage()); return 2;}
+        
+        // Get the first user in the list
+        return getNextVehicle();
+    }
     
-       /****************************************
+   
+    /****************************************
     *   getFirstVehicle()
     * 
     * Read the first Vehicle from the database
@@ -225,7 +253,7 @@ public class Vehicle {
             // Send statement to mySQl to execute.
             sqlResult = ps.executeQuery();
             System.out.println("executeQuery complete." + sqlResult);
-        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage());}
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage()); return 2;}
         
         // Get the first user in the list
         return getNextVehicle();
@@ -239,8 +267,6 @@ public class Vehicle {
      *   - returns 0 if success, error code otherwise
     ***************************************/
     int getNextVehicle() {
-        System.out.println("In GetNextVehicle");
-
         try {
             // Read the next record from the database
             if (sqlResult.next() != true) {
@@ -334,7 +360,7 @@ public class Vehicle {
             + "/nregionId: "+ regionId
             + "/npayment: " + payment
             + "/ninitMiles: "+initMiles
-            + "/ncurMiles: "+curMiles;
+            + "/ncurMiles: "+ curMiles;
         return str;
     }
 }

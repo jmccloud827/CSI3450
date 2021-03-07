@@ -45,10 +45,11 @@ public class SceneBuild extends Application {
         
     @Override
     public void start(Stage stage) throws Exception {
-       Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+       //Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
        // Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
        //Parent root = FXMLLoader.load(getClass().getResource("VehicleInv.fxml"));   
-    
+        Parent root = FXMLLoader.load(getClass().getResource("EnterService.fxml"));   
+
        //Save the stage for scene switching
         GlobalVar.ourStage = stage;
         

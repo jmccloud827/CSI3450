@@ -236,10 +236,10 @@ public class FXMLDocumentController implements Initializable {
         GlobalVar.appMenu.vehicleInv(event); 
     }
     @FXML void menuVehicleServiceHistoryClicked(ActionEvent event) throws IOException {
-        GlobalVar.appMenu.service(event); 
+        GlobalVar.appMenu.serviceHistory(event); 
     }
     @FXML void menuEnterServiceClicked (ActionEvent event) throws IOException {
-        GlobalVar.appMenu.service(event); 
+        GlobalVar.appMenu.enterService(event); 
     }  
     @FXML void menuUserClicked(ActionEvent event)  throws IOException {
         GlobalVar.appMenu.user(event);

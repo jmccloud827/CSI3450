@@ -63,7 +63,7 @@ public class User {
         String upperUserName = this.getUserName().toUpperCase();
         try {
             // Build Java SQL query statement 
-            String sql = "SELECT * FROM USER WHERE UPPER(USER_NAME) = ?"; 
+            String sql = "SELECT * FROM USER WHERE UPPER(USER_LOGIN_NAME) = ?"; 
             PreparedStatement ps = dbConn.prepareStatement(sql);
             ps.setString(1, upperUserName);
             
@@ -86,9 +86,9 @@ public class User {
                 
             // Password matched.  Load the data into the User object
             setUserId (sqlResult.getInt("USER_ID"));
-            setUserName (sqlResult.getString("USER_NAME"));
+            setUserName (sqlResult.getString("USER_LOGIN_NAME"));
             setPassword (sqlResult.getString("USER_PASSWORD"));
-            setRegionId (sqlResult.getInt("REGION_ID"));
+            setRegionId (sqlResult.getInt("REG_ID"));
             setRegionName(Region.getRegionName(regionId));
         } catch(Exception e){System.out.println("DB Error: " + e.getMessage());}
         
@@ -132,9 +132,9 @@ public class User {
         
             // Load the data into the User object
             setUserId (sqlResult.getInt("USER_ID"));
-            setUserName (sqlResult.getString("USER_NAME"));
+            setUserName (sqlResult.getString("USER_LOGIN_NAME"));
             setPassword (sqlResult.getString("USER_PASSWORD"));
-            setRegionId  (sqlResult.getInt("REGION_ID"));
+            setRegionId  (sqlResult.getInt("REG_ID"));
             setRegionName(Region.getRegionName(regionId));
         } catch(Exception e){ System.out.println("DB Error" + e.getMessage());}
             
@@ -154,7 +154,7 @@ public class User {
             
         try {
             // Build Java SQL prepared statement for the insert 
-            String sql = "INSERT INTO USER (USER_NAME, USER_PASSWORD, REGION_ID) VALUES(?,?,?)";
+            String sql = "INSERT INTO USER (USER_LOGIN_NAME, USER_PASSWORD, REG_ID) VALUES(?,?,?)";
             ps = dbConn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int rID = this.getRegionId();
             ps.setString(1, this.getUserName());
