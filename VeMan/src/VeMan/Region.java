@@ -21,21 +21,23 @@ public class Region {
 
 // Define the region name arrray and limit
 static ArrayList<String> regionNames = new ArrayList<String>();
-private static int       curRegionNum = 0;  // Used for get First/Next
+static ArrayList<Integer> regionNums = new ArrayList<Integer>();  // Used for get First/Next
 
 /* 
 * Returns the Rigion Name for a given region number
 */
 public static String getRegionName(int regionNum) {
-    curRegionNum = 0;
-    getFirstRegionName();
     // Check for out of range regions
     if ((regionNum < 0) || (regionNum > regionNames.size())) {
         return ("Reg Err: " + regionNum + "!!!");
     }
     
     // Return the region name
-    return regionNames.get(regionNum);
+    int index = regionNums.indexOf(regionNum);
+    if(index == -1){
+        return ("Reg Err: " + regionNum + "!!!");
+    }
+    return regionNames.get(index);
 }
     
 /* 
@@ -44,9 +46,9 @@ public static String getRegionName(int regionNum) {
 public static int getRegionNumber(String regionName) {
     //Loop through and check for match of the name
     String rname = regionName.trim();
-    for (int i=1; i<=regionNames.size(); i++) {
+    for (int i=0; i<regionNames.size(); i++) {
         if (rname.equalsIgnoreCase(regionNames.get(i)) == true) {
-            return i;
+            return regionNums.get(i);
         }
     }
     
@@ -60,7 +62,8 @@ public static int getRegionNumber(String regionName) {
 */
 public static String getFirstRegionName() {
     // Set the static counter to be used by getNext
-    
+    regionNames = new ArrayList<String>();
+    regionNums = new ArrayList<Integer>();
     System.out.println("In Region.GetFirstRegion.");
         Connection dbConn = DBase.connectToDB();
         
@@ -73,25 +76,26 @@ public static String getFirstRegionName() {
             sqlResult = ps.executeQuery();
             System.out.println("executeQuery complete." + sqlResult);
         } catch(Exception e){ System.out.println("DB Error: " + e.getMessage());}
-        return getNextRegionName();
+        return getNextRegionName(0);
 }
 
 /* 
 * Used to enumerate the regions, Returns the next Region Name or "" if at end
 */
-public static String getNextRegionName() {
+public static String getNextRegionName(int index) {
     System.out.println("In GetNextRegionName");
         try {
             // Read the next record from the database
             if (sqlResult.next() != true) {
                 System.out.println("sqlResult empty.  Returning 1");
-                return "";
+                return "1";
             }
         
             // Load the data into the Region object
+            regionNums.add(sqlResult.getInt("REG_ID"));
             regionNames.add(sqlResult.getString("REG_NAME"));
         } catch(Exception e){ System.out.println("DB Error" + e.getMessage());}
             
-        return regionNames.get(curRegionNum++);
+        return regionNames.get(index); //success
 }
 }

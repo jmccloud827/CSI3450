@@ -74,7 +74,7 @@ public class VehicleInvController implements Initializable {
         // Validate the data for vehicle
         String ErrorMsg = "These Fields are Invalid:";
         System.out.println("String Length: " + ErrorMsg.length());
-
+        
         String make = makeTextField.getText().trim();
         if (make.length() < 2) {
             ErrorMsg += " Make,";
@@ -282,9 +282,11 @@ public class VehicleInvController implements Initializable {
     
         // Load the regions into the choicebox
         String regionName = Region.getFirstRegionName();
-        while (regionName.equals("") ==  false) {
+        int i = 1;
+        while (regionName.equals("1") ==  false) {
             regionChoiceBox.getItems().add(regionName);
-            regionName = Region.getNextRegionName();
+            regionName = Region.getNextRegionName(i);
+            i++;
         }
         
         // Setup the vehicle TableView control and columns

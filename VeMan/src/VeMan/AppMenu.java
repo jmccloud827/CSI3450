@@ -14,7 +14,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- 
+ *
  * @author Rich Frost, Jacob McCloud, Julien Fares
  */
 public class AppMenu {

@@ -48,7 +48,7 @@ public class LoginSceneController implements Initializable {
         }
         
         // Instantsiate new User object - we don't have a UserID or RegionID yet
-        User u = new User (0, name, 0, password); 
+        User u = new User (0, name, 0, password);
         
         // Validate the User information
         int rc = u.validate();
