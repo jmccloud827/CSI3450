@@ -55,8 +55,8 @@ public class Vehicle {
     }
     
     // Constructor with values passed and prevalidated
-    Vehicle (String make, String model, int year, String vin,
-        int regionId, LocalDate leaseEnd, float payment, int initMiles) {
+    Vehicle (String make, String model, int year, String vin,int regionId
+        , LocalDate leaseEnd, float payment, int initMiles, int curMiles) {
         
         // Assign the base variables
         this.make   = make;
@@ -67,6 +67,7 @@ public class Vehicle {
         this.leaseEnd  = leaseEnd;
         this.payment   = payment;
         this.initMiles = initMiles;
+        this.curMiles = curMiles;
         
         // Create the simpleStrings for the tableview object
         this.makeSSP        = new SimpleStringProperty(make);
@@ -110,7 +111,7 @@ public class Vehicle {
             ps.setInt   (4, year);
             ps.setString(5, vin.toUpperCase());
             ps.setInt   (6, initMiles);
-            ps.setInt   (7, 0);     // CurMiles set to 0
+            ps.setInt   (7, curMiles); 
             ps.setDate  (8, Date.valueOf(leaseEnd));
             ps.setFloat (9, payment);
 

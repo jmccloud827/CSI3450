@@ -107,6 +107,9 @@ public class VehicleInvController implements Initializable {
     } catch (Exception e) {
         ErrorMsg += " Initial Miles,";
     }
+    
+    // Set current miles to 0
+    int curMiles = 0;
 
     Float payment = 0f;
     try {
@@ -143,7 +146,7 @@ public class VehicleInvController implements Initializable {
 
     // All information is valid create a new vehicle object and insert it
     Vehicle v = new Vehicle (make, model, year, vin,
-            regionId, leaseEnd, payment, initMiles);        
+            regionId, leaseEnd, payment, initMiles, curMiles);        
     int rc = v.InsertIntoDB();
 
     // Error if the insert Failed

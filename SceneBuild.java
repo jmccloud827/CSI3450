@@ -34,10 +34,10 @@ public class SceneBuild extends Application {
         GlobalVar.curUserRegionID = 1;
         
         // Run and test data load routines here
-        LoadTestData test = new LoadTestData();
+        // LoadTestData test = new LoadTestData();
         // test.loadUsers();
-        test.loadVehicles(2);
-        System.out.println("Test routines complete. Starting Application\n");
+        // test.loadVehicles(2);
+        // System.out.println("Test routines complete. Starting Application\n");
         
 
         // Create the object for the appMenu
