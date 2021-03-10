@@ -276,12 +276,14 @@ public class VehicleInvController implements Initializable {
  * Initializes the controller class.
  */
 @Override public void initialize(URL url, ResourceBundle rb) {
-    
+
     // Load the regions into the choicebox
     String regionName = Region.getFirstRegionName();
-    while (regionName.equals("") ==  false) {
+    int i = 1;
+    while (regionName.equals("1") ==  false) {
         regionChoiceBox.getItems().add(regionName);
-        regionName = Region.getNextRegionName();
+        regionName = Region.getNextRegionName(i);
+        i++;
     }
         
     // Setup the vehicle TableView control and columns

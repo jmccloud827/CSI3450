@@ -192,16 +192,18 @@ public class FXMLDocumentController implements Initializable {
         userRegionCol.setCellValueFactory(new PropertyValueFactory<User, String>("regionName"));
         userPasswordCol.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
         
+        // Load the regions into the choicebox
+        String regionName = Region.getFirstRegionName();
+        int i = 1;
+        while (regionName.equals("1") ==  false) {
+            regionChoiceBox.getItems().add(regionName);
+            regionName = Region.getNextRegionName(i);
+            i++;
+        }
+        
         // Empty and load the users into the tableview
         userTableView.getItems().clear();
         userTableView.setItems(LoadUsers());
-        
-        // Load the regions into the choicebox
-        String regionName = Region.getFirstRegionName();
-        while (regionName.equals("") ==  false) {
-            regionChoiceBox.getItems().add(regionName);
-            regionName = Region.getNextRegionName();
-        }
         
         // Clear the text fields
         newUserNameTextField.clear();
