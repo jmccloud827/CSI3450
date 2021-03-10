@@ -115,7 +115,7 @@ public class AppMenu {
     */
     public void about (ActionEvent event) throws IOException  {
         // Call code to display an about box
-        Util.ConfirmBox("About", 
+        Util.InformationBox("About", 
                     "VeMan Vehicle Manager (1.0)",
                     "Julien Fares, Richard Frost, Jacob McCloud \nCSI3450-Winter 2021");
         }
