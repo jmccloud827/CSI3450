@@ -19,27 +19,37 @@
    <children>
       <HBox layoutY="-2.0" minHeight="-Infinity" prefHeight="27.0" prefWidth="914.0">
          <children>
-            <MenuBar maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="929.0">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem fx:id="menuLogout" mnemonicParsing="false" onAction="#menuLogoutClicked" text="Logout" />
+            <MenuBar maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="939.0">
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem fx:id="menuLogout" mnemonicParsing="false" onAction="#menuLogoutClicked" text="Logout" />
                         <MenuItem fx:id="menuFileCloseClick" mnemonicParsing="false" onAction="#menuCloseClicked" text="Close" />
-                  </items>
-                </Menu>
-                  <Menu fx:id="menuUserClick" mnemonicParsing="false" text="User" />
-                <Menu fx:id="menuVehicleClick" mnemonicParsing="false" text="Vehicle">
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="User">
+                     <items>
+                        <MenuItem fx:id="menuUserMaint" mnemonicParsing="false" onAction="#menuUserClicked" text="User Maintenance" />
+                     </items>
+                  </Menu>
+                  <Menu fx:id="menuVehicleClick" mnemonicParsing="false" text="Vehicle">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#menuVehicleInvClicked" text="Vehicle Information" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuVehicleServiceHistoryClicked" text="Service History" />
-                     </items></Menu>
-                  <Menu fx:id="menuEnterServiceClicked" mnemonicParsing="false" text="EnterService" />
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem fx:id="menuHelpAboutClick" mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
+                        <MenuItem mnemonicParsing="false" onAction="#menuLeaseExpirationClicked" text="Lease Expiration" />
+                     </items>
+                  </Menu>
+                  <Menu fx:id="menuEnterServiceClicked" mnemonicParsing="false" text="Service">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuEnterServiceClicked" text="Enter Service" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuServiceHistoryClicked" text="Serivce History" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem fx:id="menuHelpAboutClick" mnemonicParsing="false" onAction="#menuAboutClicked" text="About" />
+                     </items>
+                  </Menu>
+               </menus>
             </MenuBar>
          </children>
       </HBox>

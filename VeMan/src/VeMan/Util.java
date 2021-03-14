@@ -13,7 +13,6 @@ import javafx.scene.control.ButtonType;
  * @author Rich, Jacob McCloud, Julien Fares
  */
 public class Util {
-
     /*
     *  Show an error box and wait for user to click OK
     */
@@ -43,6 +42,18 @@ public class Util {
         }
         return true;
     }
+    
+    /*
+    *  Show an Information box and wait for user to click OK
+    */
+    public static void InformationBox (String Title, String Header, String Context) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Title);
+        alert.setHeaderText(Header);
+        alert.setContentText(Context);
+        alert.showAndWait();
+    }
             
-}
+}  // Util Class
+
 

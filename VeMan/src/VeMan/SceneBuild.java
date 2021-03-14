@@ -28,13 +28,20 @@ public class SceneBuild extends Application {
             System.out.println("Database Connection failed. Program terminating.\n");
             System.exit(1);
         }
-        
-        // Create the object for the appMenu
-        GlobalVar.appMenu = new AppMenu();
-        
+                
         // Setup values for testing
         GlobalVar.curUserID = 99;
         GlobalVar.curUserRegionID = 1;
+        
+        // Run and test data load routines here
+        // LoadTestData test = new LoadTestData();
+        // test.loadUsers();
+        // test.loadVehicles(2);
+        // System.out.println("Test routines complete. Starting Application\n");
+        
+
+        // Create the object for the appMenu
+        GlobalVar.appMenu = new AppMenu();
         
         // Launch the JavaFX engine
         launch(args);
@@ -45,10 +52,16 @@ public class SceneBuild extends Application {
         
     @Override
     public void start(Stage stage) throws Exception {
-       Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-       // Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
-       //Parent root = FXMLLoader.load(getClass().getResource("VehicleInv.fxml"));   
-    
+
+
+        
+        
+        // Set the inital scene to to display
+        //Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+        // Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("VehicleInv.fxml"));   
+        // Parent root = FXMLLoader.load(getClass().getResource("EnterService.fxml"));   
+
        //Save the stage for scene switching
         GlobalVar.ourStage = stage;
         

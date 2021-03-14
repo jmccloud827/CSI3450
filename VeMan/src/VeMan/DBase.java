@@ -23,14 +23,14 @@ public class DBase {
         
         // If we are already connected, then return the Connection information
         if (dbConn != null) {
-            System.out.println("In ConnectToDB, already open, returning dbConn."); 
+            //System.out.println("In ConnectToDB, already open, returning dbConn."); 
             return dbConn;
         }
         
         // Set the database name, user name, and password
         String jdbcURL = "jdbc:mysql://localhost:3306/CSI3450";
         String dbUser = "root";
-        String dbPassword = "Jm21630#18";
+        String dbPassword = "root";
         
         // Use the MySQL JDBC drive to conect to the data base 
         System.out.println("In ConnectToDB. Resolving mySQL jdbc driver.");

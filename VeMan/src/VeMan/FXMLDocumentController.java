@@ -192,18 +192,16 @@ public class FXMLDocumentController implements Initializable {
         userRegionCol.setCellValueFactory(new PropertyValueFactory<User, String>("regionName"));
         userPasswordCol.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
         
-        // Load the regions into the choicebox
-        String regionName = Region.getFirstRegionName();
-        int i = 1;
-        while (regionName.equals("1") ==  false) {
-            regionChoiceBox.getItems().add(regionName);
-            regionName = Region.getNextRegionName(i);
-            i++;
-        }
-        
         // Empty and load the users into the tableview
         userTableView.getItems().clear();
         userTableView.setItems(LoadUsers());
+        
+        // Load the regions into the choicebox
+        String regionName = Region.getFirstRegionName();
+        while (regionName.equals("") ==  false) {
+            regionChoiceBox.getItems().add(regionName);
+            regionName = Region.getNextRegionName();
+        }
         
         // Clear the text fields
         newUserNameTextField.clear();
@@ -225,26 +223,32 @@ public class FXMLDocumentController implements Initializable {
     }
     
     
-  /****************************************** 
-  *   Methods to handle menu bar at top of screen 
-  ******************************************/
-    @FXML void menuLogoutClicked (ActionEvent event) throws IOException {
-        GlobalVar.appMenu.logout(event); 
-    }
-    @FXML void menuCloseClicked (ActionEvent event) throws IOException {
-        GlobalVar.appMenu.close(event); 
-    }
-    @FXML void menuVehicleInvClicked (ActionEvent event) throws IOException {
-        GlobalVar.appMenu.vehicleInv(event); 
-    }
-    @FXML void menuVehicleServiceHistoryClicked(ActionEvent event) throws IOException {
-        GlobalVar.appMenu.service(event); 
-    }
-    @FXML void menuEnterServiceClicked (ActionEvent event) throws IOException {
-        GlobalVar.appMenu.service(event); 
-    }  
-    @FXML void menuUserClicked(ActionEvent event)  throws IOException {
-        GlobalVar.appMenu.user(event);
-    }
    
+ /****************************************** 
+ *   Methods to handle menu bar at top of screen 
+ ******************************************/
+@FXML void menuLogoutClicked (ActionEvent event) throws IOException {
+   GlobalVar.appMenu.logout(event); 
+}
+@FXML void menuCloseClicked (ActionEvent event) throws IOException {
+   GlobalVar.appMenu.close(event); 
+}
+@FXML void menuVehicleInvClicked (ActionEvent event) throws IOException {
+    GlobalVar.appMenu.vehicleInv(event); 
+}
+@FXML void menuServiceHistoryClicked(ActionEvent event) throws IOException {
+     GlobalVar.appMenu.serviceHistory(event); 
+}
+@FXML void menuEnterServiceClicked (ActionEvent event) throws IOException {
+     GlobalVar.appMenu.enterService(event); 
+}  
+@FXML void menuUserClicked(ActionEvent event)  throws IOException {
+    GlobalVar.appMenu.user(event);
+}
+@FXML void menuAboutClicked(ActionEvent event) throws IOException {
+    GlobalVar.appMenu.about(event);
+}
+ @FXML void menuLeaseExpirationClicked(ActionEvent event) throws IOException {
+    GlobalVar.appMenu.leaseExpiration(event);
+}
 }

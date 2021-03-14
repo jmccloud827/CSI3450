@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -54,8 +55,8 @@ public class Vehicle {
     }
     
     // Constructor with values passed and prevalidated
-    Vehicle (String make, String model, int year, String vin,
-        int regionId, LocalDate leaseEnd, float payment, int initMiles) {
+    Vehicle (String make, String model, int year, String vin,int regionId
+        , LocalDate leaseEnd, float payment, int initMiles, int curMiles) {
         
         // Assign the base variables
         this.make   = make;
@@ -66,6 +67,7 @@ public class Vehicle {
         this.leaseEnd  = leaseEnd;
         this.payment   = payment;
         this.initMiles = initMiles;
+        this.curMiles = curMiles;
         
         // Create the simpleStrings for the tableview object
         this.makeSSP        = new SimpleStringProperty(make);
@@ -107,15 +109,14 @@ public class Vehicle {
             ps.setString(2, make);
             ps.setString(3, model);
             ps.setInt   (4, year);
-            ps.setString(5, vin);
+            ps.setString(5, vin.toUpperCase());
             ps.setInt   (6, initMiles);
-            ps.setInt   (7, 0);     // CurMiles set to 0
+            ps.setInt   (7, curMiles); 
             ps.setDate  (8, Date.valueOf(leaseEnd));
             ps.setFloat (9, payment);
 
             
             // Send statement to mySQl to execute.
-            System.out.println("Calling executeUpdate");
             numRowsUpdated = ps.executeUpdate();
             System.out.println("executeUpdate complete. Result: " + numRowsUpdated);
        
@@ -139,7 +140,7 @@ public class Vehicle {
    /****************************************
     * deleteFromDB()
     * 
-    *  Delete a user record from the database table
+    *  Delete a vehicle record from the database table
     *   - All maintenance records for vehicle must be deleted before calling.
     *   - Returns 0 if successful, error code otherwise
     ***************************************/
@@ -156,7 +157,6 @@ public class Vehicle {
             ps.setInt(1, this.id);
             
             // Send statement to mySQl to execute.
-            System.out.println("Calling executeUpdate");
             numRowsUpdated = ps.executeUpdate();
             System.out.println("executeUpdate complete. Result: " + numRowsUpdated);
        
@@ -169,6 +169,53 @@ public class Vehicle {
         return 0;
    }
 
+   
+   /****************************************
+    * deleteVehicleAndServiceFromDB()
+    * 
+    *  Delete a vehicle record and all associated service records from the the database
+    *   - Returns 0 if successful, error code otherwise
+    ***************************************/
+   int deleteVehicleAndServiceFromDB(IntRef serviceDeleteCount) {
+        System.out.println("In Vehicle DeleteVehicleAenServiceFromDB");
+        int returnCode = 0;
+        serviceDeleteCount.setValue(0);
+        Connection dbConn = DBase.connectToDB();
+        
+        try {
+            // Turn off auto commint so this can be handled as a transaction
+            dbConn.setAutoCommit(false);
+
+            // First delete the service records for the vehicle
+            ServiceRec s = new ServiceRec();
+            s.vehicleId = this.id;
+            s.deleteAllVehicleServiceRecordsFromDB(serviceDeleteCount);
+            
+            // Delete the vehicle from the database
+            this.deleteFromDB();
+                
+            // Commit the chages to the database
+            System.out.println("Commiting changes to DB.");
+            dbConn.commit();
+        
+        // An error occured rollback any DB changes 
+        } catch(Exception e){ 
+            System.out.println("DB Error: " + e.getMessage());
+            returnCode = 1;
+            try {
+                dbConn.rollback();
+            } catch (Exception ex){ System.out.println("DB Rollback Error: " + ex.getMessage());}
+
+        // Set the auto commit status back to true           
+        } finally {
+            try {
+                dbConn.setAutoCommit(true);
+            } catch (Exception ex){ System.out.println("DB AutoCommit Error: " + ex.getMessage());}
+        }
+        //serviceDeleteCount = 46; return 0;
+        return returnCode;
+    }
+    
    
      /******************************************
      * updateCurMileageInDB()
@@ -207,8 +254,38 @@ public class Vehicle {
         return 0;
    }
 
+   
+   /****************************************
+    *   getFirstVehicleInRegion()
+    * 
+    * Reads the first Vehicle from the database for a Region.
+    * It loads vehicles for all regions if the region id is 0.
+    ****************************************/
+    int getFirstVehicleInRegion(int regionId) {
+        System.out.println("In Vehicle.getFirstVehicleInRegion.");
+        Connection dbConn = DBase.connectToDB();
+        
+        // If  region ID  is zero then select all the vehicles
+        if (regionId == 0) 
+                return getFirstVehicle();
+        
+        try {
+            // Build Java SQL query statement 
+            String sql = "SELECT * FROM VEHICLE where REGION_ID=?"; 
+            PreparedStatement ps = dbConn.prepareStatement(sql);
+            ps.setInt(1, regionId);
+        
+            // Send statement to mySQl to execute.
+            sqlResult = ps.executeQuery();
+            System.out.println("executeQuery complete." + sqlResult);
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage()); return 2;}
+        
+        // Get the first user in the list
+        return getNextVehicle();
+    }
     
-       /****************************************
+   
+    /****************************************
     *   getFirstVehicle()
     * 
     * Read the first Vehicle from the database
@@ -225,7 +302,7 @@ public class Vehicle {
             // Send statement to mySQl to execute.
             sqlResult = ps.executeQuery();
             System.out.println("executeQuery complete." + sqlResult);
-        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage());}
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage()); return 2;}
         
         // Get the first user in the list
         return getNextVehicle();
@@ -239,8 +316,6 @@ public class Vehicle {
      *   - returns 0 if success, error code otherwise
     ***************************************/
     int getNextVehicle() {
-        System.out.println("In GetNextVehicle");
-
         try {
             // Read the next record from the database
             if (sqlResult.next() != true) {
@@ -327,14 +402,14 @@ public class Vehicle {
     public String toString() {
         String str =  
             "id: "          + id
-            + "/nmake: "    + make
-            + "/nmodel: "   + model
-            + "/nyear: "    + year
-            + "/nvin: "     + vin
-            + "/nregionId: "+ regionId
-            + "/npayment: " + payment
-            + "/ninitMiles: "+initMiles
-            + "/ncurMiles: "+curMiles;
+            + "\nmake: "    + make
+            + "\nmodel: "   + model
+            + "\nyear: "    + year
+            + "\nvin: "     + vin
+            + "\nregionId: "+ regionId
+            + "\npayment: " + payment
+            + "\ninitMiles: "+initMiles
+            + "\ncurMiles: "+ curMiles;
         return str;
     }
 }

@@ -291,10 +291,10 @@ public class User {
     public String toString() {
         String str =
           "USER_ID: " + userId +
-          " USER_LOGIN_NAME: " + userName +
+          " USER_NAME: " + userName +
           " PASSWORD: " + password +
-          " REG_ID" + regionId +
-          " REG_NAME" + regionName;
+          " REGION_ID" + regionId +
+          " REGION_NAME" + regionName;
         return str;
     }    
 }
