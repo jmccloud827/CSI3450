@@ -7,6 +7,7 @@ package VeMan;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -32,7 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class VehicleInvController implements Initializable {
 
-    // Identifiers to load User tableView and the Table Columns
+    // Identifiers to load Vehicle tableView and the Table Columns
     @FXML private TableView<Vehicle>            vehicleTableView;
     @FXML private TableColumn<Vehicle, Integer> idCol;
     @FXML private TableColumn<Vehicle, String>  regionCol;
@@ -106,6 +107,9 @@ public class VehicleInvController implements Initializable {
     } catch (Exception e) {
         ErrorMsg += " Initial Miles,";
     }
+    
+    // Set current miles to 0
+    int curMiles = 0;
 
     Float payment = 0f;
     try {
@@ -142,7 +146,7 @@ public class VehicleInvController implements Initializable {
 
     // All information is valid create a new vehicle object and insert it
     Vehicle v = new Vehicle (make, model, year, vin,
-            regionId, leaseEnd, payment, initMiles);        
+            regionId, leaseEnd, payment, initMiles, curMiles);        
     int rc = v.InsertIntoDB();
 
     // Error if the insert Failed
@@ -177,21 +181,28 @@ public class VehicleInvController implements Initializable {
         selectedRow = vehicleTableView.getSelectionModel().getSelectedItems();
         for (Vehicle v: selectedRow) {
             
-            if (Util.ConfirmBox("Vehicle Delete", "Confrim Deleteion of Vehicle.",
+            if (Util.ConfirmBox("Vehicle Delete", "Confrim Deletion of Vehicle.",
                     "Confirm deletion of Viehicle ID: " + 
                     v.getId() +", "+ v.getMake() +", "+ v.getModel()) == false) {
                 return;
             }
             
             /************************************************
-             *  Need to ADD - Delete all maintenece records for the vehicle!!!
+             *  Delete all service records, then Delete the Vehicle Record
              **************************************************/
-    
-            // Delete the vehicle from the database
-            System.out.println("In Delete Row: " + v.getId());
-            v.deleteFromDB();
+            IntRef serviceDeleteCount = new IntRef(0);
+            int rc = v.deleteVehicleAndServiceFromDB(serviceDeleteCount);
+            if (rc == 0) {
+                Util.InformationBox("Vehicle Deleted",
+                        "Vehicle # " + v.id + ", " + v.make + " " +v.model + " was deleted.",
+                        serviceDeleteCount + " service record(s) for the vehicle were deleted.");
+            } else {
+                Util.ErrorBox("Unable to Delete Vehicle",
+                        "The system was unable to delete the vehicle.",
+                        "Vehicle # " + v.id + " " + v.make + " " + v.model);
+            }
             
-            // Empty and reload the users into the tableview
+            // Empty and reload the vehicle into the tableview
             vehicleTableView.getItems().clear();
             vehicleTableView.setItems(loadVehicles ());
         }
@@ -240,7 +251,7 @@ public class VehicleInvController implements Initializable {
         System.out.println("Update mileage failed: " + rc);
     }
 
-    // Empty and reload the users into the tableview
+    // Empty and reload the vehicles into the tableview
     vehicleTableView.getItems().clear();
     vehicleTableView.setItems(loadVehicles ());
         
@@ -253,17 +264,17 @@ public class VehicleInvController implements Initializable {
 /*************************************** 
 * loadVehicles()
 * 
-* This method loads the list of users from the database
+* This method loads the list of vehicles from the database
 ***************************************/
 @FXML public ObservableList<Vehicle>  loadVehicles() {
     // Create the ObservableList that is returned
     ObservableList<Vehicle> vehicleList = FXCollections.observableArrayList();
         
-    // Add users to the list from the database
+    // Add vehicless to the list from the database
     Vehicle v = new Vehicle();
     int rc = v.getFirstVehicle();
     while (rc == 0) {
-        // Add user to userList;
+        // Add vehicle to vehicleList;
         vehicleList.add(v);
         v = new Vehicle();
         rc = v.getNextVehicle();
@@ -276,14 +287,12 @@ public class VehicleInvController implements Initializable {
  * Initializes the controller class.
  */
 @Override public void initialize(URL url, ResourceBundle rb) {
-
+    
     // Load the regions into the choicebox
     String regionName = Region.getFirstRegionName();
-    int i = 1;
-    while (regionName.equals("1") ==  false) {
+    while (regionName.equals("") ==  false) {
         regionChoiceBox.getItems().add(regionName);
-        regionName = Region.getNextRegionName(i);
-        i++;
+        regionName = Region.getNextRegionName();
     }
         
     // Setup the vehicle TableView control and columns

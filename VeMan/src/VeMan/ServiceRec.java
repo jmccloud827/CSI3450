@@ -114,7 +114,7 @@ public class ServiceRec {
     *  Delete all of the service records for a vehicle.
     *   - Returns 0 if successful, error code otherwise
     ***************************************/
-   int deleteAllVehicleServiceRecordsFromDB(Integer numRowsUpdated) {
+   int deleteAllVehicleServiceRecordsFromDB(IntRef numRecordsDeleted) {
        PreparedStatement    ps;
        
         System.out.println("In DelAllVehServRecFromDB DeleteFromDB");
@@ -126,10 +126,12 @@ public class ServiceRec {
             ps.setInt(1, this.vehicleId);
             
             // Send statement to mySQl to execute.
-            numRowsUpdated = ps.executeUpdate();
-            System.out.println("executeUpdate complete. # Rows Deleted: " + numRowsUpdated);
-               
-        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage()); return 2;}
+            int rowCount = 0;
+            rowCount = ps.executeUpdate();
+            System.out.println("executeUpdate complete. # Rows Deleted: " + rowCount);
+            numRecordsDeleted.setValue(rowCount);
+            
+        } catch(Exception e){ System.out.println("DB Error Service Delete: " + e.getMessage()); return 2;}
         return 0;
    }
 
@@ -148,7 +150,7 @@ public class ServiceRec {
     public String getDescription()          {return description;}
     public void setDescription(String sDesc){description = sDesc; descriptionSSP.set(sDesc);}
     public float getCost()                  {return cost;}
-    public void setPayment(float sCost)     {cost = sCost; setCostSSP(sCost);}
+    public void setCost(float sCost)     {cost = sCost; setCostSSP(sCost);}
   
       
     // Getters and Setter for tableview display values that require formatting
@@ -158,7 +160,7 @@ public class ServiceRec {
        
     private void setDateSSP(LocalDate date) {
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/uuuu");
-        dateSSP.set (date.format(formatters));
+        dateSSP.set (date.format(formatters));  
     }
  
     private void setCostSSP(float pmt) {
@@ -169,11 +171,11 @@ public class ServiceRec {
     public String toString() {
         String str =  
             "id: "              + id
-            + "/nvehicleId: "   + vehicleId
-            + "/ndate: "        + date
-            + "/nmiles"         + miles
-            + "/ndescription: " + description
-            + "/ncost: "        + cost;        
+            + "\nvehicleId: "   + vehicleId
+            + "\ndate: "        + date
+            + "\nmiles: "       + miles
+            + "\ndescription: " + description
+            + "\ncost: "        + cost;        
         return str;
     }
        

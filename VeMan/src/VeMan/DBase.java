@@ -23,7 +23,7 @@ public class DBase {
         
         // If we are already connected, then return the Connection information
         if (dbConn != null) {
-            System.out.println("In ConnectToDB, already open, returning dbConn."); 
+            //System.out.println("In ConnectToDB, already open, returning dbConn."); 
             return dbConn;
         }
         
