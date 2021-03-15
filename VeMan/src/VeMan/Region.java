@@ -88,7 +88,7 @@ public static String getNextRegionName(int index) {
             // Read the next record from the database
             if (sqlResult.next() != true) {
                 System.out.println("sqlResult empty.  Returning 1");
-                return "1";
+                return "";
             }
         
             // Load the data into the Region object

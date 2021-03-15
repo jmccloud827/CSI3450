@@ -198,9 +198,11 @@ public class FXMLDocumentController implements Initializable {
         
         // Load the regions into the choicebox
         String regionName = Region.getFirstRegionName();
+        int i = 1;
         while (regionName.equals("") ==  false) {
             regionChoiceBox.getItems().add(regionName);
-            regionName = Region.getNextRegionName();
+            regionName = Region.getNextRegionName(i);
+            i++;
         }
         
         // Clear the text fields

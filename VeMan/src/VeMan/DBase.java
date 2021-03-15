@@ -30,7 +30,7 @@ public class DBase {
         // Set the database name, user name, and password
         String jdbcURL = "jdbc:mysql://localhost:3306/CSI3450";
         String dbUser = "root";
-        String dbPassword = "root";
+        String dbPassword = "Jm21630#18";
         
         // Use the MySQL JDBC drive to conect to the data base 
         System.out.println("In ConnectToDB. Resolving mySQL jdbc driver.");

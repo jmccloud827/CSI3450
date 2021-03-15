@@ -89,7 +89,7 @@ public class AppMenu {
     */
     public void serviceHistory (ActionEvent event) throws IOException  {
         // Switch display to the proper scene
-        Parent parent = FXMLLoader.load(getClass().getResource("ServiceHIstory.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("ServiceHistory.fxml"));
         Scene  scene = new Scene (parent);
         Stage window = GlobalVar.ourStage; 
         window.setScene (scene);

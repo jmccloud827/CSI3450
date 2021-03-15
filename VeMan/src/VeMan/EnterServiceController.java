@@ -206,9 +206,11 @@ public ObservableList<Vehicle>  loadVehiclesInRegion(int regionId) {
     // Load the regions into the choicebox
     regionChoiceBox.getItems().add("All");
     String regionName = Region.getFirstRegionName();
+    int i = 1;
     while (regionName.equals("") ==  false) {
         regionChoiceBox.getItems().add(regionName);
-        regionName = Region.getNextRegionName();
+        regionName = Region.getNextRegionName(i);
+        i++;
     }
 
                
