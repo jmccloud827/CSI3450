@@ -40,7 +40,7 @@ public class ServiceHistoryController implements Initializable {
     @FXML private TableColumn<ServiceRec, LocalDate> dateCol;
     @FXML private TableColumn<ServiceRec, String> serviceCol;
     @FXML private TableColumn<ServiceRec, Float> costCol;
-    @FXML private TableColumn<ServiceRec, Integer> millageCol;
+    @FXML private TableColumn<ServiceRec, Integer> milageCol;
 
  /*   @FXML private MenuItem          menuLogout;
     @FXML private MenuItem          menuFileCloseClick;
@@ -114,7 +114,7 @@ public class ServiceHistoryController implements Initializable {
             dateCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, LocalDate>("dateSSP"));
             serviceCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, String>("descriptionSSP"));
             costCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, Float>("costSSP"));
-            //millageCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, Integer>("miles"));
+            milageCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, Integer>("miles"));
             
             reportTableView.getItems().clear();
             reportTableView.setItems(reportList);
