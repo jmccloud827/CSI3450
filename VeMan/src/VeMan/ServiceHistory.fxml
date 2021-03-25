@@ -89,8 +89,8 @@
                   <TableColumn fx:id="milageCol" prefWidth="75.598876953125" style="-fx-alignment: CENTER;" text="Millage" />
                </columns>
             </TableView>
-            <Label fx:id="vehicleId" alignment="CENTER" layoutX="709.0" layoutY="123.0" prefHeight="19.0" prefWidth="66.0" text="Vehicle ID:" textAlignment="RIGHT" />
-            <Label fx:id="total" alignment="CENTER" layoutX="594.0" layoutY="433.0" prefHeight="19.0" prefWidth="41.0" text="Total:" textAlignment="RIGHT" />
+            <Label fx:id="vehicleId" alignment="CENTER" layoutX="682.0" layoutY="124.0" prefHeight="19.0" prefWidth="121.0" text="Vehicle ID:" textAlignment="RIGHT" />
+            <Label fx:id="total" alignment="CENTER" layoutX="594.0" layoutY="433.0" prefHeight="19.0" prefWidth="113.0" text="Total:" textAlignment="RIGHT" />
          </children>
       </AnchorPane>
    </children>

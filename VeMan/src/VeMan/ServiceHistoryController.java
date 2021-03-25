@@ -2,9 +2,11 @@ package VeMan;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ResourceBundle;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,12 +15,9 @@ import java.time.LocalDate;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ServiceHistoryController implements Initializable {
@@ -33,11 +32,15 @@ public class ServiceHistoryController implements Initializable {
 
     @FXML private ChoiceBox<String> regionChoiceBox;
     
-    @FXML private TableView<Vehicle> reportTableView;
-    @FXML private TableColumn<Vehicle, LocalDate> dateCol;
-    @FXML private TableColumn<Vehicle, String> serviceCol;
-    @FXML private TableColumn<Vehicle, Float> costCol;
-    @FXML private TableColumn<Vehicle, Integer> millageCol;
+    @FXML private Label vehicleId;
+
+    @FXML private Label total;
+    
+    @FXML private TableView<ServiceRec> reportTableView;
+    @FXML private TableColumn<ServiceRec, LocalDate> dateCol;
+    @FXML private TableColumn<ServiceRec, String> serviceCol;
+    @FXML private TableColumn<ServiceRec, Float> costCol;
+    @FXML private TableColumn<ServiceRec, Integer> millageCol;
 
  /*   @FXML private MenuItem          menuLogout;
     @FXML private MenuItem          menuFileCloseClick;
@@ -69,7 +72,53 @@ public class ServiceHistoryController implements Initializable {
  }
     
     @FXML void reportButtonPressed(ActionEvent event) {
-
+        ObservableList<Vehicle>    selectedRow;
+    selectedRow = vehicleTableView.getSelectionModel().getSelectedItems();
+    if (selectedRow.isEmpty()) {
+        // No row was selected
+        Util.ErrorBox("No Vehicle Selected", "Please select a vehicle for Service entry.", "Click on row to select"); 
+        return;
+    }
+    Vehicle v = selectedRow.get(0);
+    ResultSet sqlResult;
+        Connection dbConn = DBase.connectToDB();
+        try {
+            // Build Java SQL query statement 
+            String sql = "SELECT * FROM MAINTENANCE WHERE VEHICLE_ID=?"; 
+            PreparedStatement ps = dbConn.prepareStatement(sql);
+            ps.setString(1, "" + v.id);
+            vehicleId.setText("Vehicle ID: " + v.id);
+            
+            // Send statement to mySQl to execute.
+            sqlResult = ps.executeQuery();
+            System.out.println("executeQuery complete." + sqlResult);
+            
+            ObservableList<ServiceRec> reportList = FXCollections.observableArrayList();
+            ServiceRec s;
+            int totalCost = 0;
+            if (sqlResult.next() == false) {
+                System.out.println("Result is Empty");
+            } else {
+                do {
+                    Date date = sqlResult.getDate("MAINT_DATE");
+                    LocalDate temp = date.toLocalDate();
+                    int cost = sqlResult.getInt("MAINT_COST");
+                    totalCost += cost;
+                    s = new ServiceRec(v.id, temp, sqlResult.getInt("MAINT_MILEAGE"), sqlResult.getString("MAINT_DESCRIPTION"), cost);
+                    reportList.add(s);
+                } while (sqlResult.next());
+            }
+            
+            total.setText("Total Cost: " + totalCost);
+            
+            dateCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, LocalDate>("dateSSP"));
+            serviceCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, String>("descriptionSSP"));
+            costCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, Float>("costSSP"));
+            //millageCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, Integer>("miles"));
+            
+            reportTableView.getItems().clear();
+            reportTableView.setItems(reportList);
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage());}
     }
     
      /*************************************** 
@@ -98,7 +147,6 @@ public ObservableList<Vehicle>  loadVehiclesInRegion(int regionId) {
  * Initializes the controller class.
  */
 @Override public void initialize(URL url, ResourceBundle rb) {
-        
     // Load the regions into the choicebox
     regionChoiceBox.getItems().add("All");
     String regionName = Region.getFirstRegionName();
