@@ -5,8 +5,14 @@
  */
 package VeMan;
 
+import static VeMan.DBase.dbConn;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -24,8 +31,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author jay2j
  */
 public class LeaseExpirationController implements Initializable {
-     @FXML private ChoiceBox     regionChoiceBox;
-      @FXML private TableView<Vehicle>            vehicleTableView;
+    @FXML private ChoiceBox     regionChoiceBox;
+    @FXML private TableView<Vehicle>            vehicleTableView;
     @FXML private TableColumn<Vehicle, Integer> idCol;
     @FXML private TableColumn<Vehicle, String>  regionCol;
     @FXML private TableColumn<Vehicle, Integer> yearCol;
@@ -36,6 +43,7 @@ public class LeaseExpirationController implements Initializable {
     @FXML private TableColumn<Vehicle, String>  paymentStrCol;
     @FXML private TableColumn<Vehicle, Integer> initMilesCol;
     @FXML private TableColumn<Vehicle, Integer> curMilesCol;
+    @FXML private DatePicker leaseEndDatePicker;
 
     /**
      * Initializes the controller class.
@@ -94,7 +102,7 @@ public class LeaseExpirationController implements Initializable {
      
         // TODO
     }    
-        @FXML void menuLogoutClicked (ActionEvent event) throws IOException {
+    @FXML void menuLogoutClicked (ActionEvent event) throws IOException {
         GlobalVar.appMenu.logout(event); 
     }
     @FXML void menuCloseClicked (ActionEvent event) throws IOException {
@@ -116,8 +124,44 @@ public class LeaseExpirationController implements Initializable {
     @FXML void menuLeaseExpirationClicked(ActionEvent event)  throws IOException {
         GlobalVar.appMenu.leaseExpiration(event);
     }
-     @FXML void showVehiclesButtonPressed (ActionEvent event) throws IOException {
-   
+    @FXML void showVehiclesButtonPressed (ActionEvent event) throws IOException {
+        LocalDate localDate = leaseEndDatePicker.getValue();
+        Date date = Date.valueOf(localDate);
+        String dateString = date.toString();
+        dateString = dateString.replace("-", "");
+        ObservableList<Vehicle> reportList = FXCollections.observableArrayList();
+        String regionName = regionChoiceBox.getValue().toString().trim();
+        try {
+            // Build Java SQL query statement 
+            String sql = "SELECT * FROM VEHICLE WHERE VEH_LEASE_END <= ?"; 
+            PreparedStatement ps = dbConn.prepareStatement(sql);
+            ps.setString(1, dateString);
+            ResultSet sqlResult;
+            
+            // Send statement to mySQl to execute.
+            sqlResult = ps.executeQuery();
+            System.out.println("executeQuery complete." + sqlResult);
+            
+            Vehicle v;
+            int totalCost = 0;
+            if (sqlResult.next() == false) {
+                System.out.println("Result is Empty");
+            } else {
+                do {
+                    Date dateTemp = sqlResult.getDate("VEH_LEASE_END");
+                    LocalDate temp = dateTemp.toLocalDate();
+                    v = new Vehicle(sqlResult.getString("VEH_MAKE"), sqlResult.getString("VEH_MODEL"), sqlResult.getInt("VEH_YEAR"), sqlResult.getString("VEH_VIN"), sqlResult.getInt("REGION_ID"), temp, sqlResult.getFloat("VEH_PAYMENT"), sqlResult.getInt("VEH_INITIAL_MILEAGE"), sqlResult.getInt("VEH_CUR_MILEAGE"));
+                    v.id = sqlResult.getInt("VEH_ID");
+                    if (regionName.equals("All")) {
+                    reportList.add(v);
+                    } else {
+                        if (v.regionId == Region.getRegionNumber(regionName)) {
+                            reportList.add(v);
+                        }
+                    }
+                } while (sqlResult.next());
+            }
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage());}
         // Setup the vehicle TableView control and columns
         idCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("id"));
         regionCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("regionSSP"));
@@ -132,6 +176,6 @@ public class LeaseExpirationController implements Initializable {
          
         // Empty and load the vehicles into the tableview
         vehicleTableView.getItems().clear();
-        vehicleTableView.setItems(loadVehicles());
+        vehicleTableView.setItems(reportList);
     }
 }
