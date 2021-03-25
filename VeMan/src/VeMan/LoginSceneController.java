@@ -43,7 +43,11 @@ public class LoginSceneController implements Initializable {
         
         // Validate that all fields are present
         if (name.isEmpty() || password.isEmpty()) {
-            System.out.println("ERROR -- All fields are required to add a user.");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login Error");
+            alert.setHeaderText("Empty Fields");
+            alert.setContentText("All fields required to login");
+            alert.showAndWait();
             return;
         }
         
@@ -53,12 +57,12 @@ public class LoginSceneController implements Initializable {
         // Validate the User information
         int rc = u.validate();
         if (rc != 0) {
-             Alert alert = new Alert(Alert.AlertType.ERROR);
-             alert.setTitle("Unable to verify user");
-             alert.setContentText("The name and password combination were not correct.");
-             alert.setHeaderText("");
-             alert.showAndWait();
-             return;
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login Error");
+            alert.setHeaderText("Incorrect Credentials");
+            alert.setContentText("The Username and Password combination is incorrect");
+            alert.showAndWait();
+            return;
         }
         
         // Login was sucessful. Set the glabal user and region ID
