@@ -65,7 +65,7 @@ public class AppMenu {
         
         // Switch display to the vehicle scene
         System.out.println("In lease Expiration scene load");
-        Parent parent = FXMLLoader.load(getClass().getResource("VehicleInv.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("LeaseExpiration.fxml"));
         Scene  scene = new Scene (parent);
         Stage window = GlobalVar.ourStage;
         window.setScene (scene);
