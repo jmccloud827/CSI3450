@@ -21,7 +21,7 @@
                   <Font name="System Bold Italic" size="20.0" />
                </font>
             </Label>
-            <TableView fx:id="vehicleTableView" layoutX="55.0" layoutY="154.0" prefHeight="266.0" prefWidth="474.0">
+            <TableView fx:id="vehicleTableView" layoutX="55.0" layoutY="154.0" prefHeight="266.0" prefWidth="467.0">
                <columns>
                   <TableColumn fx:id="idCol" prefWidth="28.0" style="-fx-alignment: CENTER;" text="Id" />
                   <TableColumn fx:id="regionCol" prefWidth="70.0" style="-fx-alignment: CENTER;" text="Region" />
@@ -81,16 +81,19 @@
                </font>
             </Button>
             <Label alignment="CENTER" layoutX="172.0" layoutY="124.0" prefHeight="19.0" prefWidth="219.0" text="Select Vehicle for Service History Report" textAlignment="RIGHT" />
-            <TableView fx:id="reportTableView" layoutX="592.0" layoutY="155.0" prefHeight="266.0" prefWidth="301.0">
+            <TableView fx:id="reportTableView" layoutX="567.0" layoutY="155.0" prefHeight="266.0" prefWidth="326.0">
                <columns>
-                  <TableColumn fx:id="dateCol" prefWidth="73.2149658203125" style="-fx-alignment: CENTER;" text="Date" />
-                  <TableColumn fx:id="serviceCol" prefWidth="100.7850341796875" style="-fx-alignment: CENTER;" text="Service" />
-                  <TableColumn fx:id="costCol" prefWidth="51.83453369140625" text="Cost" />
-                  <TableColumn fx:id="milageCol" prefWidth="75.598876953125" style="-fx-alignment: CENTER;" text="Millage" />
+                  <TableColumn fx:id="dateCol" prefWidth="82.5" style="-fx-alignment: CENTER;" text="Date" />
+                  <TableColumn fx:id="serviceCol" prefWidth="92.0" style="-fx-alignment: CENTER;" text="Service" />
+                  <TableColumn fx:id="costCol" prefWidth="81.0" text="Cost" />
+                  <TableColumn fx:id="milageCol" prefWidth="69.5" style="-fx-alignment: CENTER;" text="Millage" />
                </columns>
             </TableView>
-            <Label fx:id="vehicleId" alignment="CENTER" layoutX="682.0" layoutY="124.0" prefHeight="19.0" prefWidth="121.0" text="Vehicle ID:" textAlignment="RIGHT" />
-            <Label fx:id="total" alignment="CENTER" layoutX="594.0" layoutY="433.0" prefHeight="19.0" prefWidth="113.0" text="Total:" textAlignment="RIGHT" />
+            <Label fx:id="vehicleId" alignment="CENTER" layoutX="670.0" layoutY="124.0" prefHeight="19.0" prefWidth="121.0" text="Vehicle ID:" textAlignment="RIGHT" />
+            <Label fx:id="total" layoutX="722.0" layoutY="434.0" prefHeight="19.0" prefWidth="160.0" text="Total:">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font></Label>
          </children>
       </AnchorPane>
    </children>

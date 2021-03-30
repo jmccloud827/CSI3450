@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VeMan.LeaseExpirationController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VeMan.LeaseExpirationController">
    <children>
       <HBox minHeight="-Infinity" prefHeight="27.0" prefWidth="914.0">
          <children>
@@ -48,33 +48,14 @@
             </MenuBar>
          </children>
       </HBox>
-      <Label layoutX="290.0" layoutY="54.0" prefHeight="30.0" prefWidth="315.0" text="VeMan - Lease End Records">
+      <Label layoutX="307.0" layoutY="54.0" prefHeight="30.0" prefWidth="315.0" text="VeMan - Lease End Records">
          <font>
             <Font name="System Bold Italic" size="20.0" />
-         </font>
-      </Label>
-      <Label alignment="CENTER" layoutX="280.0" layoutY="127.0" prefHeight="19.0" prefWidth="516.0" text="Upcoming Expiring Leases" textAlignment="RIGHT">
-         <font>
-            <Font name="System Bold" size="12.0" />
          </font>
       </Label>
       <ChoiceBox fx:id="regionChoiceBox" layoutX="29.0" layoutY="256.0" prefHeight="25.0" prefWidth="118.0" />
       <DatePicker fx:id="leaseEndDatePicker" layoutX="14.0" layoutY="184.0" prefHeight="25.0" prefWidth="148.0" />
       <Button fx:id="showVehiclesButton" layoutX="42.0" layoutY="323.0" mnemonicParsing="false" onAction="#showVehiclesButtonPressed" text="Show Vehicles" />
-      <TableView fx:id="vehicleTableView" layoutX="170.0" layoutY="154.0" prefHeight="292.0" prefWidth="736.0">
-         <columns>
-            <TableColumn fx:id="idCol" prefWidth="28.0" style="-fx-alignment: CENTER;" text="Id" />
-            <TableColumn fx:id="regionCol" prefWidth="65.0" style="-fx-alignment: CENTER;" text="Region" />
-            <TableColumn fx:id="yearCol" prefWidth="37.0" text="Year" />
-            <TableColumn fx:id="makeCol" prefWidth="68.0" style="-fx-alignment: CENTER;" text="Make" />
-            <TableColumn fx:id="modelCol" prefWidth="95.0" style="-fx-alignment: CENTER;" text="Model" />
-            <TableColumn fx:id="VINCol" prefWidth="114.0" style="-fx-alignment: CENTER_RIGHT;" text="VIN" />
-            <TableColumn fx:id="initMilesCol" prefWidth="69.0" style="-fx-alignment: CENTER_RIGHT;" text="Orig Miles" />
-            <TableColumn fx:id="curMilesCol" prefWidth="76.0" style="-fx-alignment: CENTER_RIGHT;" text="Cur Miles" />
-            <TableColumn fx:id="leaseEndStrCol" minWidth="0.0" prefWidth="68.0" style="-fx-alignment: CENTER;" text="Lease End" />
-            <TableColumn fx:id="paymentStrCol" prefWidth="115.0" style="-fx-alignment: CENTER_RIGHT;" text="Monthly Payments" />
-         </columns>
-      </TableView>
       <Label alignment="CENTER" layoutX="14.0" layoutY="165.0" prefHeight="19.0" prefWidth="148.0" text="Lease End Date" textAlignment="RIGHT">
          <font>
             <Font name="System Bold" size="12.0" />
@@ -85,5 +66,48 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
+      <AnchorPane fx:id="ReportOutputPane" layoutX="162.0" layoutY="108.0" prefHeight="456.0" prefWidth="763.0">
+         <children>
+            <Label alignment="CENTER" layoutX="161.0" layoutY="14.0" prefHeight="19.0" prefWidth="422.0" text="Upcoming Expiring Leases" textAlignment="RIGHT">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <TableView fx:id="vehicleTableView" layoutX="9.0" layoutY="41.0" prefHeight="316.0" prefWidth="753.0">
+               <columns>
+                  <TableColumn fx:id="idCol" prefWidth="28.0" style="-fx-alignment: CENTER;" text="Id" />
+                  <TableColumn fx:id="regionCol" prefWidth="65.0" style="-fx-alignment: CENTER;" text="Region" />
+                  <TableColumn fx:id="yearCol" prefWidth="37.0" text="Year" />
+                  <TableColumn fx:id="makeCol" prefWidth="68.0" style="-fx-alignment: CENTER;" text="Make" />
+                  <TableColumn fx:id="modelCol" prefWidth="95.0" style="-fx-alignment: CENTER;" text="Model" />
+                  <TableColumn fx:id="VINCol" prefWidth="114.0" style="-fx-alignment: CENTER_RIGHT;" text="VIN" />
+                  <TableColumn fx:id="initMilesCol" prefWidth="63.0" style="-fx-alignment: CENTER_RIGHT;" text="Orig Miles" />
+                  <TableColumn fx:id="curMilesCol" prefWidth="71.0" style="-fx-alignment: CENTER_RIGHT;" text="Cur Miles" />
+                  <TableColumn fx:id="leaseEndStrCol" minWidth="0.0" prefWidth="72.0" style="-fx-alignment: CENTER;" text="Lease End" />
+                  <TableColumn fx:id="paymentStrCol" prefWidth="122.0" style="-fx-alignment: CENTER_RIGHT;" text="Monthly Payment" />
+               </columns>
+            </TableView>
+            <Label layoutX="258.0" layoutY="378.0" text="Number of Vehicles: ">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label layoutX="538.0" layoutY="375.0" text="Total Monthly Payments:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="TotalPaymentsDisplay" layoutX="686.0" layoutY="375.0" prefHeight="17.0" prefWidth="63.0" text="0.00">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="VehicleCountDisplay" layoutX="382.0" layoutY="379.0" prefHeight="17.0" prefWidth="63.0" text="0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
 </children>
 </AnchorPane>

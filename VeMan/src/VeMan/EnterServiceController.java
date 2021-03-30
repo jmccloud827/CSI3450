@@ -210,7 +210,7 @@ public ObservableList<Vehicle>  loadVehiclesInRegion(int regionId) {
     while (regionName.equals("") ==  false) {
         regionChoiceBox.getItems().add(regionName);
         regionName = Region.getNextRegionName(i);
-        i++;
+        i++;   
     }
 
                

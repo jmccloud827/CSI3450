@@ -307,8 +307,29 @@ public class Vehicle {
         // Get the first user in the list
         return getNextVehicle();
     }
+
     
+    /****************************************
+    *   getFirstVehicleByQuery()
+    * 
+    * Passed Prepared statement query and the first Vehicle from the database
+    * based on the query
+    ****************************************/
+    int getFirstVehicleByQuery(PreparedStatement ps) {
+        System.out.println("In Vehicle.getFirstVehicleByQuery.");
+        Connection dbConn = DBase.connectToDB();
+        
+        try {
+            // Send statement to mySQl to execute.
+            sqlResult = ps.executeQuery();
+            System.out.println("executeQuery complete." + sqlResult);
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage()); return 2;}
+        
+        // Get the first user in the list
+        return getNextVehicle();
+    }
     
+        
     /***************************************
      * getNextVehicle()
      * 
@@ -385,7 +406,7 @@ public class Vehicle {
        
     
     private void setLeaseEndSSP(LocalDate date) {
-        DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+        DateTimeFormatter formatters = DateTimeFormatter.ofPattern("MM/dd/uuuu");
         leaseEndSSP.set (date.format(formatters));
     }
  

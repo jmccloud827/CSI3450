@@ -202,7 +202,7 @@ public class FXMLDocumentController implements Initializable {
         while (regionName.equals("") ==  false) {
             regionChoiceBox.getItems().add(regionName);
             regionName = Region.getNextRegionName(i);
-            i++;
+            i++;   
         }
         
         // Clear the text fields

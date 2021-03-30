@@ -294,7 +294,7 @@ public class VehicleInvController implements Initializable {
     while (regionName.equals("") ==  false) {
         regionChoiceBox.getItems().add(regionName);
         regionName = Region.getNextRegionName(i);
-        i++;
+        i++;   
     }
         
     // Setup the vehicle TableView control and columns

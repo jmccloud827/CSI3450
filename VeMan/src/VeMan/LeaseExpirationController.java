@@ -11,6 +11,7 @@ import java.net.URL;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ResourceBundle;
@@ -21,14 +22,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
  *
- * @author jay2j
+ * @author 
  */
 public class LeaseExpirationController implements Initializable {
     @FXML private ChoiceBox     regionChoiceBox;
@@ -44,52 +47,105 @@ public class LeaseExpirationController implements Initializable {
     @FXML private TableColumn<Vehicle, Integer> initMilesCol;
     @FXML private TableColumn<Vehicle, Integer> curMilesCol;
     @FXML private DatePicker leaseEndDatePicker;
+    @FXML private AnchorPane ReportOutputPane;
+    @FXML private Label TotalPaymentsDisplay;
+    @FXML private Label VehicleCountDisplay;
 
+   
+    /****************************************** 
+    *  Called when the show vehicle button is pressed 
+    ******************************************/    
+    @FXML void showVehiclesButtonPressed (ActionEvent event) throws IOException {
+        String                  sql;                // String for SQL statment;
+        float                   totalPayments = 0;
+        int                     vehicleCount = 0;
+        ObservableList<Vehicle> reportList = FXCollections.observableArrayList();
+
+        // Get the date that was selected and format it for SQL
+        LocalDate   localDate = leaseEndDatePicker.getValue();
+        Date        lastDate = Date.valueOf(localDate);
+
+        // Build search information and query the database for matches    
+        try {
+            // Check if a region name was selected
+            String regionName;
+            try {
+                regionName = regionChoiceBox.getValue().toString().trim();
+            } catch (Exception e) {
+                // Exception thrown when drop down is blank
+                regionName = "ALL";
+            }
+            
+            // Build the Prepared statement for the vehicle query
+            PreparedStatement ps;
+            int regionId = Region.getRegionNumber(regionName);
+            if (regionId == 0) {
+                // All regions specified
+                sql = "SELECT * FROM VEHICLE WHERE (VEH_LEASE_END <= ?)";
+                ps = dbConn.prepareStatement(sql);
+                ps.setDate(1, lastDate);
+            } else {
+                sql = "SELECT * FROM VEHICLE WHERE (VEH_LEASE_END <= ?) AND (REGION_ID = ?)";
+                ps = dbConn.prepareStatement(sql);
+                ps.setDate(1, lastDate);
+                ps.setInt(2, regionId);
+            }
+            
+            // Loop through and add all matching records to the list    
+            Vehicle v = new Vehicle();
+            int rc = v.getFirstVehicleByQuery(ps);
+            while (rc == 0) {
+                // Add vehicle to vehicleList;
+                reportList.add(v);
+                v = new Vehicle();
+                rc = v.getNextVehicle();
+                
+                // Adjust counts and totals
+                vehicleCount++;
+                totalPayments += v.payment;
+            }
+            
+        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage());}
+
+        
+        // Setup the vehicle TableView control and columns
+        idCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("id"));
+        regionCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("regionSSP"));
+        makeCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("makeSSP"));
+        modelCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("modelSSP"));
+        yearCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("year"));
+        VINCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("vinSSP"));
+        leaseEndStrCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("leaseEndSSP"));
+        paymentStrCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("paymentSSP"));
+        initMilesCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("initMiles")); 
+        curMilesCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("curMiles"));
+         
+        // Empty and load the vehicles into the tableview
+        vehicleTableView.getItems().clear();
+        vehicleTableView.setItems(reportList);
+        
+        // Format and display the count and total
+        VehicleCountDisplay.setText(String.valueOf(vehicleCount));
+        DecimalFormat df = new DecimalFormat("$###,000.00");
+        String paymentString = df.format(totalPayments);
+        TotalPaymentsDisplay.setText(paymentString);
+        
+        // Make the report pane visible
+        ReportOutputPane.setVisible(true);
+    }
+
+    
+    
     /**
      * Initializes the controller class.
      */
-        /*************************************** 
-     * loadVehicles()
-     * 
-     * This method loads the list of users from the database
-     ***************************************/
-    public ObservableList<Vehicle>  loadVehicles() {
-        // Create the ObservableList that is returned
-        ObservableList<Vehicle> vehicleList = FXCollections.observableArrayList();
-        
-        // Add users to the list from the database
-        Vehicle v = new Vehicle();
-        int rc = v.getFirstVehicle();
-        while (rc == 0) {
-            // Add user to userList;
-            vehicleList.add(v);
-            v = new Vehicle();
-            rc = v.getNextVehicle();
-        }
-        return vehicleList;
-        
-        
-    }
-    
-    public ObservableList<Vehicle>  loadVehiclesInRegion(int regionId) {
-    // Create the ObservableList that is returned
-    ObservableList<Vehicle> vehicleList = FXCollections.observableArrayList();
-        
-    // Add users to the list from the database
-    Vehicle v = new Vehicle();
-    int rc = v.getFirstVehicleInRegion(regionId);
-    while (rc == 0) {
-        // Add user to userList;
-        vehicleList.add(v);
-        v = new Vehicle();
-        rc = v.getNextVehicle();
-    }
-    return vehicleList;
-}
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-           // Load the regions into the choicebox
-            regionChoiceBox.getItems().add("All");
+        // Hide the report pane
+        ReportOutputPane.setVisible(false);
+
+        // Load the regions into the choicebox
+        regionChoiceBox.getItems().add("All");
         String regionName = Region.getFirstRegionName();
         int i = 1;
         while (regionName.equals("") ==  false) {
@@ -97,11 +153,13 @@ public class LeaseExpirationController implements Initializable {
             regionName = Region.getNextRegionName(i);
             i++;   
         }
-        
-        
-     
-        // TODO
     }    
+    
+
+    
+    /****************************************** 
+    *   Methods to handle menu bar at top of screen 
+    ******************************************/    
     @FXML void menuLogoutClicked (ActionEvent event) throws IOException {
         GlobalVar.appMenu.logout(event); 
     }
@@ -124,58 +182,6 @@ public class LeaseExpirationController implements Initializable {
     @FXML void menuLeaseExpirationClicked(ActionEvent event)  throws IOException {
         GlobalVar.appMenu.leaseExpiration(event);
     }
-    @FXML void showVehiclesButtonPressed (ActionEvent event) throws IOException {
-        LocalDate localDate = leaseEndDatePicker.getValue();
-        Date date = Date.valueOf(localDate);
-        String dateString = date.toString();
-        dateString = dateString.replace("-", "");
-        ObservableList<Vehicle> reportList = FXCollections.observableArrayList();
-        String regionName = regionChoiceBox.getValue().toString().trim();
-        try {
-            // Build Java SQL query statement 
-            String sql = "SELECT * FROM VEHICLE WHERE VEH_LEASE_END <= ?"; 
-            PreparedStatement ps = dbConn.prepareStatement(sql);
-            ps.setString(1, dateString);
-            ResultSet sqlResult;
-            
-            // Send statement to mySQl to execute.
-            sqlResult = ps.executeQuery();
-            System.out.println("executeQuery complete." + sqlResult);
-            
-            Vehicle v;
-            int totalCost = 0;
-            if (sqlResult.next() == false) {
-                System.out.println("Result is Empty");
-            } else {
-                do {
-                    Date dateTemp = sqlResult.getDate("VEH_LEASE_END");
-                    LocalDate temp = dateTemp.toLocalDate();
-                    v = new Vehicle(sqlResult.getString("VEH_MAKE"), sqlResult.getString("VEH_MODEL"), sqlResult.getInt("VEH_YEAR"), sqlResult.getString("VEH_VIN"), sqlResult.getInt("REGION_ID"), temp, sqlResult.getFloat("VEH_PAYMENT"), sqlResult.getInt("VEH_INITIAL_MILEAGE"), sqlResult.getInt("VEH_CUR_MILEAGE"));
-                    v.id = sqlResult.getInt("VEH_ID");
-                    if (regionName.equals("All")) {
-                    reportList.add(v);
-                    } else {
-                        if (v.regionId == Region.getRegionNumber(regionName)) {
-                            reportList.add(v);
-                        }
-                    }
-                } while (sqlResult.next());
-            }
-        } catch(Exception e){ System.out.println("DB Error: " + e.getMessage());}
-        // Setup the vehicle TableView control and columns
-        idCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("id"));
-        regionCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("regionSSP"));
-        makeCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("makeSSP"));
-        modelCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("modelSSP"));
-        yearCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("year"));
-        VINCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("vinSSP"));
-        leaseEndStrCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("leaseEndSSP"));
-        paymentStrCol.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("paymentSSP"));
-        initMilesCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("initMiles")); 
-        curMilesCol.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("curMiles"));
-         
-        // Empty and load the vehicles into the tableview
-        vehicleTableView.getItems().clear();
-        vehicleTableView.setItems(reportList);
-    }
+    
 }
+

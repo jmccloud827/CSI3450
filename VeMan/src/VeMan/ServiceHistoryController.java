@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,7 +40,7 @@ public class ServiceHistoryController implements Initializable {
     @FXML private TableView<ServiceRec> reportTableView;
     @FXML private TableColumn<ServiceRec, LocalDate> dateCol;
     @FXML private TableColumn<ServiceRec, String> serviceCol;
-    @FXML private TableColumn<ServiceRec, Float> costCol;
+    @FXML private TableColumn<ServiceRec, String> costCol;
     @FXML private TableColumn<ServiceRec, Integer> milageCol;
 
  /*   @FXML private MenuItem          menuLogout;
@@ -109,11 +110,12 @@ public class ServiceHistoryController implements Initializable {
                 } while (sqlResult.next());
             }
             
-            total.setText("Total Cost: " + totalCost);
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            total.setText("Total Cost: " + formatter.format(totalCost));
             
             dateCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, LocalDate>("dateSSP"));
             serviceCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, String>("descriptionSSP"));
-            costCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, Float>("costSSP"));
+            costCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, String>("costSSP"));
             milageCol.setCellValueFactory(new PropertyValueFactory<ServiceRec, Integer>("miles"));
             
             reportTableView.getItems().clear();

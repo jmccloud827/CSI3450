@@ -57,7 +57,7 @@ public class ServiceRec {
         this.dateSSP            = new SimpleStringProperty("");
         this.setDateSSP (date);
         this.descriptionSSP     = new SimpleStringProperty(description);
-        this.costSSP            = new SimpleStringProperty("");
+        this.costSSP            = new SimpleStringProperty("000.00");
         this.setCostSSP (cost);
        
     }
@@ -164,7 +164,7 @@ public class ServiceRec {
     }
  
     private void setCostSSP(float pmt) {
-        DecimalFormat df = new DecimalFormat("#,000.00");
+        DecimalFormat df = new DecimalFormat("#,###.00");
         costSSP.set(df.format(pmt));
     }
  
